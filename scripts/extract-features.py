@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 from scipy.signal import hilbert
 
-input_dir = "data/processed"
-output_file = "features/extracted-features.csv"
+input_dir = "data/processed/office/"
+output_file = "features/office/extracted-features.csv"
 os.makedirs("features", exist_ok=True)
 
 feature_data = []
@@ -14,7 +14,7 @@ for fname in os.listdir(input_dir):
     if fname.endswith(".wav"):
         filepath = os.path.join(input_dir, fname)
         y, sr = librosa.load(filepath, sr=None, mono=True)
-        
+
         # Extract features
         rms = np.mean(librosa.feature.rms(y=y))
         centroid = np.mean(librosa.feature.spectral_centroid(y=y, sr=sr))
@@ -30,7 +30,7 @@ for fname in os.listdir(input_dir):
         onsets = librosa.onset.onset_detect(y=y, sr=sr, backtrack=True)
         onset_density = len(onsets) / (len(y) / sr)
         ioi = np.diff(onsets).mean() if len(onsets) > 1 else 0
-        
+
         # Save as a dict
         feature_row = {
             "filename": fname,

@@ -38,12 +38,12 @@ for nature_source in os.listdir(input_dir):
                 y, sr = librosa.load(filepath, sr=None, mono=True)
 
                 # Normalize
-                y_norm = normalize_audio(y)
+                # y_norm = normalize_audio(y)
 
                 # Optionally trim silence
                 # y_trimmed = trim_silence(y_norm)
                 # y_final = y_trimmed
-                y_final = y_norm
+                y_final = y
 
                 # Save to processed folder
                 output_path = os.path.join(output_source_dir, fname)
