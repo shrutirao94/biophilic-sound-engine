@@ -5,16 +5,26 @@ import os
 # Paths (adjust as needed)
 OFFICE_FEATURE_PATH = "features/office/extracted-features.csv"
 NATURE_FEATURE_PATH = "features/nature/extracted-features.csv"
-OUTPUT_PATH = "data/transformed/office-features-transformed.csv"
+OUTPUT_DIR = "data/transformed/"
 
 # Load data
 def load_features(path):
     return pd.read_csv(path)
 
-# Compute statistical means of nature dataset
-def compute_nature_means(nature_df):
-    return nature_df.mean(numeric_only=True)
+# # Compute statistical means of nature dataset
+# def compute_nature_means(nature_df):
+    # return nature_df.mean(numeric_only=True)
 
+ # Compute per-feature statistical targets for transformation
+def compute_nature_targets(nature_df):
+    return {
+        'rms': nature_df['rms'].median(),
+        'centroid': nature_df['centroid'].mean(),
+        'flatness': nature_df['flatness'].median(),
+        'bandwidth': nature_df['bandwidth'].mean(),
+        'zcr': nature_df['zcr'].median(),
+        'onset_density': nature_df['onset_density'].mean()
+    }
 # Perform linear transformation towards nature means
 def linear_transform(office_feature, nature_mean, alpha=0.2):
     return office_feature + alpha * (nature_mean - office_feature)
@@ -29,20 +39,22 @@ def transform_features(office_df, nature_means, alpha=0.2):
     return transformed_df
 
 # Main function
-def main(alpha=0.2):
+def main():
     office_df = load_features(OFFICE_FEATURE_PATH)
     nature_df = load_features(NATURE_FEATURE_PATH)
-
     nature_means = compute_nature_means(nature_df)
 
-    transformed_df = transform_features(office_df, nature_means, alpha)
+    alphas = [0.8, 1.0]
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    # Save transformed features
-    transformed_df.to_csv(OUTPUT_PATH, index=False)
-    print(f"Transformation complete. Data saved to {OUTPUT_PATH}")
+    for alpha in alphas:
+        transformed_df = transform_features(office_df, nature_means, alpha)
+        output_path = os.path.join(OUTPUT_DIR, f"office_alpha_{alpha:.1f}.csv")
+        transformed_df.to_csv(output_path, index=False)
+        print(f"Saved: {output_path}")
+
 
 if __name__ == "__main__":
-    main(alpha=0.2)  # Adjust alpha as needed
+    main()
+
