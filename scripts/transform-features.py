@@ -25,31 +25,31 @@ def compute_nature_targets(nature_df):
         'zcr': nature_df['zcr'].median(),
         'onset_density': nature_df['onset_density'].mean()
     }
-# Perform linear transformation towards nature means
-def linear_transform(office_feature, nature_mean, alpha=0.2):
-    return office_feature + alpha * (nature_mean - office_feature)
+
+# Perform linear transformation towards target values
+def linear_transform(office_feature, nature_target, alpha=0.2):
+    return office_feature + alpha * (nature_target - office_feature)
 
 # Transform office features
-def transform_features(office_df, nature_means, alpha=0.2):
+def transform_features(office_df, nature_targets, alpha=0.2):
     transformed_df = office_df.copy()
-    feature_columns = nature_means.index
-    for feature in feature_columns:
+    for feature, target_value in nature_targets.items():
         if feature in office_df.columns:
-            transformed_df[feature] = linear_transform(office_df[feature], nature_means[feature], alpha)
+            transformed_df[feature] = linear_transform(office_df[feature], target_value, alpha)
     return transformed_df
 
 # Main function
 def main():
     office_df = load_features(OFFICE_FEATURE_PATH)
     nature_df = load_features(NATURE_FEATURE_PATH)
-    nature_means = compute_nature_means(nature_df)
+    nature_targets = compute_nature_targets(nature_df)
 
-    alphas = [0.8, 1.0]
+    alphas = [0.1, 0.3, 0.5, 0.8, 1.0]
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     for alpha in alphas:
-        transformed_df = transform_features(office_df, nature_means, alpha)
+        transformed_df = transform_features(office_df, nature_targets, alpha)
         output_path = os.path.join(OUTPUT_DIR, f"office_alpha_{alpha:.1f}.csv")
         transformed_df.to_csv(output_path, index=False)
         print(f"Saved: {output_path}")
