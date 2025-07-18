@@ -176,3 +176,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+notebooks/05-ml-overlay-approach.ipynb
