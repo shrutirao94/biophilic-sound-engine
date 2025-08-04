@@ -2,6 +2,7 @@
 
 /data/
 /notebooks/plots/
+/features/
 
 __pycache__/
 *.py[cod]
