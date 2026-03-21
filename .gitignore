@@ -3,6 +3,7 @@
 /data/
 /notebooks/plots/
 /features/
+.DS_Store
 
 __pycache__/
 *.py[cod]
