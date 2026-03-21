@@ -5,8 +5,8 @@ import pandas as pd
 from scipy.signal import hilbert
 
 # Input directory for processed nature segments
-input_dir = "data/processed/nature/"
-output_file = "features/nature/extracted-features.csv"
+input_dir = "data/test/reference_eval/"
+output_file = "features/birds-extracted-features.csv"
 os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
 feature_data = []
@@ -56,5 +56,5 @@ for nature_source in os.listdir(input_dir):
 # Save to CSV
 df = pd.DataFrame(feature_data)
 df.to_csv(output_file, index=False)
-print("✅ Features for nature segments saved to:", output_file)
+print("Features for nature segments saved to:", output_file)
 

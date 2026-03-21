@@ -1,9 +1,13 @@
-# scripts/segment_curated_nature.py
-
 import os
 from pathlib import Path
 import librosa
 import soundfile as sf
+
+import datetime
+
+SKIP_LOG_PATH = Path("skipped_segments.log")
+with open(SKIP_LOG_PATH, "w") as f:
+    f.write(f"# Skipped segments log — started {datetime.datetime.now()}\n")
 
 SAMPLE_RATE = 48000
 SEGMENT_DURATION = 60  # in seconds
@@ -13,7 +17,7 @@ RAW_DIR = Path("data/raw/curated_nature")
 OUT_DIR = Path("data/processed_curated")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-audio_extensions = {'.wav', '.mp3', '.flac', '.ogg', '.m4a'}
+audio_extensions = {'.wav', '.mp3', '.flac', '.ogg', '.m4a', 'mov'}
 
 for category_dir in RAW_DIR.iterdir():
     if not category_dir.is_dir():
@@ -39,9 +43,12 @@ for category_dir in RAW_DIR.iterdir():
                 duration = len(segment) / SAMPLE_RATE
 
                 if duration < MIN_SEGMENT_LENGTH:
-                    continue
+                    skip_info = f"{category}/{audio_file.name}, segment {i // segment_samples}, duration {duration:.2f}s\n"
+                    with open(SKIP_LOG_PATH, "a") as f:
+                        f.write(skip_info)
+                        continue
 
-                seg_name = f"{audio_file.stem}_seg{i // segment_samples:04d}.wav"
+                seg_name = f"{audio_file.stem}_seg{i // segment_samples:03d}.wav"
                 out_path = out_category_dir / seg_name
                 sf.write(out_path, segment, SAMPLE_RATE)
 

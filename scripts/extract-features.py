@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 from scipy.signal import hilbert
 
-input_dir = "data/processed/office/"
-output_file = "features/office/extracted-features.csv"
+input_dir = "data/test/transformed_eval/"
+output_file = "features/eval/extracted-features.csv"
 os.makedirs("features", exist_ok=True)
 
 feature_data = []

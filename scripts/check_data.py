@@ -3,7 +3,8 @@ import librosa
 import numpy as np
 
 # Path to your wind dataset
-WIND_DIR = Path("data/processed_classes_filtered/wind/")
+# WIND_DIR = Path("data/raw/curated_nature/water/")
+WIND_DIR = Path("data/processed_classes_filtered/water/")
 
 file_durations = []
 errors = 0
